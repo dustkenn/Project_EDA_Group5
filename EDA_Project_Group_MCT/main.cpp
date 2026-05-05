@@ -1,5 +1,6 @@
 // Group 5: Measures of Central Tendency (Mean, Median, and Mode)
 // Group Members: Baraero, Dimasangal, Gelotin, Sarte, Servidad, Tangilon
+// Engineering Data Analysis Final Project
 
 #include <iostream>
 #include <vector>
@@ -9,40 +10,30 @@
 using namespace std;
 
 // ======================= MEAN FUNCTION =======================
-// This function calculates the average of all numbers
-
 double calculateMean(const vector<double>& data) {
     double sum = 0;
 
-    // add all values in the dataset
     for (int i = 0; i < data.size(); i++) {
         sum += data[i];
     }
 
-    // divide total by number of values
     return sum / data.size();
 }
 
-// ======================= MEDIAN FUNCTION =======================
-// This function finds the middle value after sorting
-
+// ======================= MEDIAN FUNCTION =====================
 double calculateMedian(vector<double> data) {
-    sort(data.begin(), data.end()); // sort values first
+    sort(data.begin(), data.end());
     int n = data.size();
 
-    // if even number of values
     if (n % 2 == 0)
         return (data[n/2 - 1] + data[n/2]) / 2.0;
-    // if odd number of values
     else
         return data[n/2];
 }
 
 // ======================= MODE FUNCTION =======================
-// This function finds the most repeated number(s)
-
 vector<double> calculateMode(vector<double> data) {
-    sort(data.begin(), data.end()); // sort first
+    sort(data.begin(), data.end());
 
     vector<double> mode;
     int maxCount = 0;
@@ -50,26 +41,23 @@ vector<double> calculateMode(vector<double> data) {
     for (int i = 0; i < data.size(); i++) {
         int count = 1;
 
-        // count repeated values
         for (int j = i + 1; j < data.size(); j++) {
             if (data[i] == data[j])
                 count++;
             else
                 break;
         }
-        // update mode if higher frequency is found
+
         if (count > maxCount) {
             maxCount = count;
             mode.clear();
             mode.push_back(data[i]);
         }
-        // add if same highest frequency
         else if (count == maxCount && count > 1) {
             mode.push_back(data[i]);
         }
     }
 
-    // if all values appear only once, there is no mode
     if (maxCount == 1)
         mode.clear();
 
@@ -79,26 +67,50 @@ vector<double> calculateMode(vector<double> data) {
 // ======================= MAIN PROGRAM =======================
 int main() {
     char choice;
+    int startChoice;
+
+    // ===== START MENU =====
+    cout << "============================================================\n";
+    cout << "|         WELCOME TO MEASURES OF CENTRAL TENDENCY          |\n";
+    cout << "|                 (Mean, Median, and Mode)                 |\n";
+    cout << "============================================================\n\n";
+
+    cout << "\t\t\t[1] Start\n";
+    cout << "\t\t\t[2] Exit\n\n";
+
+    cout << "\t\t   Enter your choice: ";
+    cin >> startChoice;
+
+    while (cin.fail() || (startChoice != 1 && startChoice != 2)) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "\nInvalid input. Please enter 1 or 2: ";
+        cin >> startChoice;
+    }
+
+    if (startChoice == 2) {
+        cout << "\nThank you. Program terminated.\n";
+        return 0;
+    }
 
     do {
-        system("cls"); // clear screen for clean output
+        system("cls");
+
         cout << "============================================================\n";
         cout << "|            MEASURE OF CENTRAL TENDENCY SYSTEM            |\n";
         cout << "============================================================\n";
 
         int n;
 
-        // input number of data values
+        // ===== INPUT NUMBER OF DATA VALUES =====
         cout << "Enter the number of data values: ";
 
         while (true) {
             cin >> n;
 
-            // check invalid input (letters, decimals, negative numbers)
             if (cin.fail() || cin.peek() == '.' || n <= 0) {
                 cin.clear();
                 cin.ignore(1000, '\n');
-
                 cout << "Please enter a positive whole number only: ";
             } else {
                 cin.ignore(1000, '\n');
@@ -108,51 +120,102 @@ int main() {
 
         vector<double> data(n);
 
-        // input data values
+        // ===== INPUT DATA VALUES =====
         cout << "\nEnter the data values:\n";
 
         for (int i = 0; i < n; i++) {
             cout << "\n Value no." << i + 1 << ": ";
 
-            // check if input is valid number
             while (!(cin >> data[i])) {
                 cin.clear();
                 cin.ignore(1000, '\n');
-
                 cout << "Invalid input. Please enter a number: ";
             }
         }
 
-        // compute mean, median, mode
+        // ===== OPERATION MENU =====
+        int operation;
+        cout << "\n------------------------------------------------------------\n";
+        cout << "|             What would you like to calculate?            |\n";
+        cout << "------------------------------------------------------------\n\n";
+        cout << "[1] Mean\n";
+        cout << "[2] Median\n";
+        cout << "[3] Mode\n";
+        cout << "[4] All of the above\n";
+        cout << "\n------------------------------------------------------------\n";
+        cout << "Enter your choice (1-4): ";
+
+        while (true) {
+            cin >> operation;
+
+            if (cin.fail() || operation < 1 || operation > 4) {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Invalid input. Please enter a number from 1 to 4: ";
+            } else {
+                break;
+            }
+        }
+
+        // ===== COMPUTATION =====
         double mean = calculateMean(data);
         double median = calculateMedian(data);
         vector<double> mode = calculateMode(data);
 
-        // output results with 2 decimal places
         cout << fixed << setprecision(2);
 
         cout << "\n";
         cout << "============================================================\n";
         cout << "|                          RESULTS                         |\n";
-        cout << "============================================================\n";
+        cout << "============================================================\n\n";
 
-        cout << "Mean   : " << mean << endl;
-        cout << "Median : " << median << endl;
+        // ===== OUTPUT BASED ON CHOICE =====
+        switch (operation) {
+            case 1:
+                cout << "Mean   : " << mean << endl;
+                break;
 
-        // display mode result
-        if (mode.empty()) {
-            cout << "Mode   : (No mode)\n";
-        } else {
-            cout << "Mode   : ";
-            for (int i = 0; i < mode.size(); i++) {
-                cout << mode[i] << " ";
-            }
-            cout << endl;
+            case 2:
+                cout << "Median : " << median << endl;
+                break;
+
+            case 3:
+                if (mode.empty()) {
+                    cout << "Mode   : (No mode)\n";
+                } else {
+                    cout << "Mode   : ";
+                    for (int i = 0; i < mode.size(); i++) {
+                        cout << mode[i];
+                        if (i != mode.size() - 1) {
+                            cout << ", ";
+                        }
+                    }
+                    cout << endl;
+                }
+                break;
+
+            case 4:
+                cout << "Mean   : " << mean << endl;
+                cout << "Median : " << median << endl;
+
+                if (mode.empty()) {
+                    cout << "Mode   : (No mode)\n";
+                } else {
+                    cout << "Mode   : ";
+                    for (int i = 0; i < mode.size(); i++) {
+                        cout << mode[i];
+                        if (i != mode.size() - 1) {
+                            cout << ", ";
+                        }
+                    }
+                    cout << endl;
+                }
+                break;
         }
 
         cout << "\n============================================================\n";
 
-        // ask user if they want to try again
+        // ===== TRY AGAIN =====
         do {
             cout << "\nDo you want to try again? (y/n): ";
             cin >> choice;
